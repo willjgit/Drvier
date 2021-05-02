@@ -1,6 +1,10 @@
 # Prerequisites
 *.d
 
+# VS Things
+.vs/
+x64/
+
 # Object files
 *.o
 *.ko
