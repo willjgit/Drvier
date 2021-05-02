@@ -1,0 +1,11 @@
+﻿  Building 'Driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
+  Entry.c
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\Entry.c(6,44): error C2220: the following warning is treated as an error
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\Entry.c(6,44): warning C4047: 'function': 'PLOAD_IMAGE_NOTIFY_ROUTINE' differs in levels of indirection from 'PLOAD_IMAGE_NOTIFY_ROUTINE (__cdecl *)(PUNICODE_STRING,HANDLE,PIMAGE_INFO)'
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\Entry.c(6,33): warning C4024: 'PsRemoveLoadImageNotifyRoutine': different types for formal and actual parameter 1
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\Entry.c(12,41): warning C4047: 'function': 'PLOAD_IMAGE_NOTIFY_ROUTINE' differs in levels of indirection from 'PLOAD_IMAGE_NOTIFY_ROUTINE (__cdecl *)(PUNICODE_STRING,HANDLE,PIMAGE_INFO)'
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\Entry.c(12,30): warning C4024: 'PsSetLoadImageNotifyRoutine': different types for formal and actual parameter 1
+  events.c
+  Generating Code...
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\events.c(6): error C2220: the following warning is treated as an error
+C:\Users\Client\source\repos\C++\Kernel\Driver\Driver\src\events.c(6): warning C4716: 'ImageLoaded': must return a value
