@@ -11,12 +11,45 @@ VOID Unload(IN PDRIVER_OBJECT driverObject) {
 	
 }
 
+NTSTATUS Create(PDEVICE_OBJECT DeviceObject, PIRP irp)
+{
+	irp->IoStatus.Status = STATUS_SUCCESS;
+	irp->IoStatus.Information = 0;
+
+	IoCompleteRequest(irp, IO_NO_INCREMENT);
+	KdPrint(("Create Requested"));
+	return STATUS_SUCCESS;
+}
+
+NTSTATUS Close(PDEVICE_OBJECT DeviceObject, PIRP irp)
+{
+	irp->IoStatus.Status = STATUS_SUCCESS;
+	irp->IoStatus.Information = 0;
+
+	IoCompleteRequest(irp, IO_NO_INCREMENT);
+	KdPrint(("Close Requested"));
+	return STATUS_SUCCESS;
+}
+
+
+NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
+	NTSTATUS status = STATUS_SUCCESS;
+	PIO_STACK_LOCATION idkWhatThisIs = IoGetCurrentIrpStackLocation(Irp);
+
+
+	Irp->IoStatus.Information = 0;
+	Irp->IoStatus.Status = status;
+	IoCompleteRequest(Irp, IO_NO_INCREMENT);
+
+	return status;
+}
+
+
+
 
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registryPath) {
 	NTSTATUS status;
 
-	driverObject->DriverUnload = Unload;
-	
 
 	status = IoCreateDevice(driverObject, 0, &DeviceName, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &DeviceObj);
 	
@@ -35,15 +68,18 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registr
 		return status;
 	}
 
+
+	//PsSetLoadImageNotifyRoutine(ImageLoaded);
+
+	driverObject->MajorFunction[IRP_MJ_CREATE] = Create;
+	driverObject->MajorFunction[IRP_MJ_CLOSE]  = Close;
+	driverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = Control;
+	driverObject->DriverUnload = Unload;
+
+
 	KdPrint(("Driver Loaded"));
-
-	
-	PsSetLoadImageNotifyRoutine(ImageLoaded);
-
-
-
-
-	DbgPrint("Hello World");
 	return STATUS_SUCCESS;
 
 }
+
+
