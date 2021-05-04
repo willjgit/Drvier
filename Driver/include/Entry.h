@@ -1,6 +1,9 @@
 #pragma once
 #include <ntifs.h>
 
+#define READ CTL_CODE(FILE_DEVICE_UNKNOWN,0x333,METHOD_BUFFERED,FILE_SPECIAL_ACCESS)
+
+
 VOID Unload(IN PDRIVER_OBJECT driverObject);
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registryPath);
 

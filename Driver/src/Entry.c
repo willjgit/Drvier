@@ -33,14 +33,23 @@ NTSTATUS Close(PDEVICE_OBJECT DeviceObject, PIRP irp)
 
 
 NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
-	NTSTATUS status = STATUS_SUCCESS;
+	NTSTATUS status;
+	ULONG bytes = 0;
+
+
 	PIO_STACK_LOCATION idkWhatThisIs = IoGetCurrentIrpStackLocation(Irp);
 
 	ULONG code = idkWhatThisIs->Parameters.DeviceIoControl.IoControlCode;
 
+	if (code = READ)
+	{
+		KdPrint(("Read Requested"));
+		status = STATUS_SUCCESS;
+		bytes = 0;
+	}
 
 
-	Irp->IoStatus.Information = 0;
+	Irp->IoStatus.Information = bytes;
 	Irp->IoStatus.Status = status;
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 
