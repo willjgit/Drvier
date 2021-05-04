@@ -36,6 +36,9 @@ NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
 	NTSTATUS status = STATUS_SUCCESS;
 	PIO_STACK_LOCATION idkWhatThisIs = IoGetCurrentIrpStackLocation(Irp);
 
+	ULONG code = idkWhatThisIs->Parameters.DeviceIoControl.IoControlCode;
+
+
 
 	Irp->IoStatus.Information = 0;
 	Irp->IoStatus.Status = status;
