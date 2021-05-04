@@ -4,6 +4,7 @@
 # VS Things
 .vs/
 x64/
+[D]ebug/
 
 # Object files
 *.o
