@@ -4,35 +4,42 @@
 #include "../include/events.h"
 
 VOID Unload(IN PDRIVER_OBJECT driverObject) {
+	UNREFERENCED_PARAMETER(driverObject);
 	IoDeleteSymbolicLink(&DeviceLink);
 	IoDeleteDevice(DeviceObj);
 	PsRemoveLoadImageNotifyRoutine(ImageLoaded);
-	DbgPrint("Unloaded");
+	Print("Unloaded");
 	
 }
 
 NTSTATUS Create(PDEVICE_OBJECT DeviceObject, PIRP irp)
 {
+	UNREFERENCED_PARAMETER(DeviceObject);
 	irp->IoStatus.Status = STATUS_SUCCESS;
 	irp->IoStatus.Information = 0;
 
 	IoCompleteRequest(irp, IO_NO_INCREMENT);
-	KdPrint(("Create Requested"));
+	Print("Create Requested");
 	return STATUS_SUCCESS;
 }
 
 NTSTATUS Close(PDEVICE_OBJECT DeviceObject, PIRP irp)
 {
+	UNREFERENCED_PARAMETER(DeviceObject);
+
 	irp->IoStatus.Status = STATUS_SUCCESS;
 	irp->IoStatus.Information = 0;
 
 	IoCompleteRequest(irp, IO_NO_INCREMENT);
-	KdPrint(("Close Requested"));
+	Print("Close Requested");
 	return STATUS_SUCCESS;
 }
 
 
-NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
+NTSTATUS Control(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
+	UNREFERENCED_PARAMETER(DeviceObject);
+	
+	
 	NTSTATUS status;
 	ULONG bytes = 0;
 
@@ -41,13 +48,19 @@ NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
 
 	ULONG code = idkWhatThisIs->Parameters.DeviceIoControl.IoControlCode;
 
-	if (code = READ)
+	if (code == READ)
 	{
-		KdPrint(("Read Requested"));
+		Print("Read Requested");
 		status = STATUS_SUCCESS;
 		bytes = 0;
 	}
-
+	
+	else if (code == DLL_ADDR_REQUEST) {
+		PULONG addr = Irp->AssociatedIrp.SystemBuffer;
+		*addr = DLLAdress;
+		status = STATUS_SUCCESS;
+		bytes = sizeof(*addr);
+	}
 
 	Irp->IoStatus.Information = bytes;
 	Irp->IoStatus.Status = status;
@@ -60,6 +73,9 @@ NTSTATUS Control(PDEVICE_OBJECT DeviceObj, PIRP Irp) {
 
 
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registryPath) {
+	
+	UNREFERENCED_PARAMETER(registryPath);
+	
 	NTSTATUS status;
 
 
@@ -67,7 +83,7 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registr
 	
 	if (!NT_SUCCESS(status))
 	{
-		KdPrint(("Device Creation Failed"));
+		Print("Device Creation Failed");
 		return status;
 	}
 
@@ -75,13 +91,13 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registr
 
 	if (!NT_SUCCESS(status))
 	{
-		KdPrint(("Link Creation Failed"));
+		Print("Link Creation Failed");
 		IoDeleteDevice(DeviceObj);
 		return status;
 	}
 
 
-	//PsSetLoadImageNotifyRoutine(ImageLoaded);
+	PsSetLoadImageNotifyRoutine(ImageLoaded);
 
 	driverObject->MajorFunction[IRP_MJ_CREATE] = Create;
 	driverObject->MajorFunction[IRP_MJ_CLOSE]  = Close;
@@ -89,7 +105,7 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT driverObject, IN PCUNICODE_STRING registr
 	driverObject->DriverUnload = Unload;
 
 
-	KdPrint(("Driver Loaded"));
+	Print("Driver Loaded");
 	return STATUS_SUCCESS;
 
 }
