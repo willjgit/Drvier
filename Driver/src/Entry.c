@@ -1,4 +1,4 @@
-#pragma warning (disable : 4047 4024)
+#pragma warning (disable : 4047 4024 4022)
 
 #include "../include/Entry.h"
 #include "../include/events.h"
@@ -36,6 +36,13 @@ NTSTATUS Close(PDEVICE_OBJECT DeviceObject, PIRP irp)
 }
 
 
+NTSTATUS ReadMemoryKernel(PEPROCESS proc, PVOID src, PVOID target, SIZE_T size) {
+	PSIZE_T bytes;
+	return MmCopyVirtualMemory(proc, src, PsGetCurrentProcess(), target, size, KernelMode, &bytes);
+
+}
+
+
 NTSTATUS Control(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 	UNREFERENCED_PARAMETER(DeviceObject);
 	
@@ -48,11 +55,17 @@ NTSTATUS Control(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 
 	ULONG code = idkWhatThisIs->Parameters.DeviceIoControl.IoControlCode;
 
-	if (code == READ)
+	if (code == READ_REQUEST)
 	{
-		Print("Read Requested");
-		status = STATUS_SUCCESS;
-		bytes = 0;
+		PK_READ_REQUEST request = (PK_READ_REQUEST)Irp->AssociatedIrp.SystemBuffer;
+		PEPROCESS process;
+		if (NT_SUCCESS(PsLookupProcessByProcessId(request->ProcId,&process)))
+		{
+			//Read data from address then copy that data to buffer
+			ReadMemoryKernel(process, request->Addr, request->Buff, request->Size);
+			status = STATUS_SUCCESS;
+			bytes = sizeof(K_READ_REQUEST);
+		}
 	}
 	
 	else if (code == DLL_ADDR_REQUEST) {
