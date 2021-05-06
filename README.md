@@ -16,4 +16,4 @@ This is a Kernel driver which gives you the ability of reading and writing to me
 - User Mode App
 
 # Note 
-- Yes you still need an User Mode App because Driver will do the memory things and User Mode App will od the rest.
+- Yes you still need an User Mode App because Driver will do the memory things and User Mode App will do the rest.
