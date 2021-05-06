@@ -5,7 +5,7 @@ This is a Kernel driver which gives you the ability of reading and writing to me
 - You can read or write to memory without creating a process
 - Unlike csgo not every game gives you the chance to write to memory from User Mode, so you will need a driver
 - More security for csgo cheats
-- It sounds better than User Mode shit
+- It sounds better than User Mode(WinAPI) shit
 
 # How To Use
 - Build it then load it with your fav loader.
