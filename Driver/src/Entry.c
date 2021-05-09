@@ -74,6 +74,13 @@ NTSTATUS Control(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 		status = STATUS_SUCCESS;
 		bytes = sizeof(*addr);
 	}
+	else if(code == PROC_ID_REQUEST)
+	{
+		PULONG procid = Irp->AssociatedIrp.SystemBuffer;
+		*procid = procID;
+		status = STATUS_SUCCESS;
+		bytes = sizeof(*procid);
+	}
 
 	Irp->IoStatus.Information = bytes;
 	Irp->IoStatus.Status = status;
